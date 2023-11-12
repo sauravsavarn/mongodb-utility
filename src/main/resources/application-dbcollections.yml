@@ -1,0 +1,4 @@
+dbcollections:
+  - employee
+  - address
+  - salaryband

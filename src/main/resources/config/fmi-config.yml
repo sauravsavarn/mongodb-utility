@@ -1,0 +1,12 @@
+fmi:
+  region:
+    apac:
+      TH: { read: "test-database", write: "test-database" }
+      SG: { read: "test-database", write: "test-database" }
+      CBPR: { read: "test-database", write: "test-database" }
+    emea:
+      SA: { read: "test-database", write: "test-database" }
+      RM:: { read: "test-database", write: "test-database" }
+    nam:
+      LYNX: { read: "test-database", write: "test-database" }
+      CBPR: { read: "test-database", write: "test-database" }

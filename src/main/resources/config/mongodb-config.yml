@@ -1,0 +1,325 @@
+database:
+  name:
+  - saurav
+  - gaurav
+  env:
+    sit:
+      apac:
+        read:
+          - hostname: 127.0.0.1:27017
+            username: root
+            password: root
+            keystore:
+              location: na
+              password: na
+            truststore:
+              location: na
+              password: na
+        write:
+          - hostname: 127.0.0.1:27017
+            username: root
+            password: root
+            keystore:
+              location: na
+              password: na
+            truststore:
+              location: na
+              password: na
+      emea:
+        read:
+          - hostname: 127.0.0.1:27017
+            username: root
+            password: root
+            keystore:
+              location: na
+              password: na
+            truststore:
+              location: na
+              password: na
+        write:
+          - hostname: 127.0.0.1:27017
+            username: root
+            password: root
+            keystore:
+              location: na
+              password: na
+            truststore:
+              location: na
+              password: na
+      nam:
+        read:
+          - hostname: 127.0.0.1:27017
+            username: root
+            password: root
+            keystore:
+              location: na
+              password: na
+            truststore:
+              location: na
+              password: na
+        write:
+          - hostname: 127.0.0.1:27017
+            username: root
+            password: root
+            keystore:
+              location: na
+              password: na
+            truststore:
+              location: na
+              password: na
+    uat:
+      apac:
+        read:
+          - hostname: 127.0.0.1:27017
+            username: root
+            password: root
+            keystore:
+              location: na
+              password: na
+            truststore:
+              location: na
+              password: na
+        write:
+          - hostname: 127.0.0.1:27017
+            username: root
+            password: root
+            keystore:
+              location: na
+              password: na
+            truststore:
+              location: na
+              password: na
+      emea:
+        read:
+          - hostname: 127.0.0.1:27017
+            username: root
+            password: root
+            keystore:
+              location: na
+              password: na
+            truststore:
+              location: na
+              password: na
+        write:
+          - hostname: 127.0.0.1:27017
+            username: root
+            password: root
+            keystore:
+              location: na
+              password: na
+            truststore:
+              location: na
+              password: na
+      nam:
+        read:
+          - hostname: 127.0.0.1:27017
+            username: root
+            password: root
+            keystore:
+              location: na
+              password: na
+            truststore:
+              location: na
+              password: na
+        write:
+          - hostname: 127.0.0.1:27017
+            username: root
+            password: root
+            keystore:
+              location: na
+              password: na
+            truststore:
+              location: na
+              password: na
+    pte:
+      apac:
+        read:
+          - hostname: 127.0.0.1:27017
+            username: root
+            password: root
+            keystore:
+              location: na
+              password: na
+            truststore:
+              location: na
+              password: na
+        write:
+          - hostname: 127.0.0.1:27017
+            username: root
+            password: root
+            keystore:
+              location: na
+              password: na
+            truststore:
+              location: na
+              password: na
+      emea:
+        read:
+          - hostname: 127.0.0.1:27017
+            username: root
+            password: root
+            keystore:
+              location: na
+              password: na
+            truststore:
+              location: na
+              password: na
+        write:
+          - hostname: 127.0.0.1:27017
+            username: root
+            password: root
+            keystore:
+              location: na
+              password: na
+            truststore:
+              location: na
+              password: na
+      nam:
+        read:
+          - hostname: 127.0.0.1:27017
+            username: root
+            password: root
+            keystore:
+              location: na
+              password: na
+            truststore:
+              location: na
+              password: na
+        write:
+          - hostname: 127.0.0.1:27017
+            username: root
+            password: root
+            keystore:
+              location: na
+              password: na
+            truststore:
+              location: na
+              password: na
+    cob:
+      apac:
+        read:
+          - hostname: 127.0.0.1:27017
+            username: root
+            password: root
+            keystore:
+              location: na
+              password: na
+            truststore:
+              location: na
+              password: na
+        write:
+          - hostname: 127.0.0.1:27017
+            username: root
+            password: root
+            keystore:
+              location: na
+              password: na
+            truststore:
+              location: na
+              password: na
+      emea:
+        read:
+          - hostname: 127.0.0.1:27017
+            username: root
+            password: root
+            keystore:
+              location: na
+              password: na
+            truststore:
+              location: na
+              password: na
+        write:
+          - hostname: 127.0.0.1:27017
+            username: root
+            password: root
+            keystore:
+              location: na
+              password: na
+            truststore:
+              location: na
+              password: na
+      nam:
+        read:
+          - hostname: 127.0.0.1:27017
+            username: root
+            password: root
+            keystore:
+              location: na
+              password: na
+            truststore:
+              location: na
+              password: na
+        write:
+          - hostname: 127.0.0.1:27017
+            username: root
+            password: root
+            keystore:
+              location: na
+              password: na
+            truststore:
+              location: na
+              password: na
+    prod:
+      apac:
+        read:
+          - hostname: 127.0.0.1:27017
+            username: root
+            password: root
+            keystore:
+              location: na
+              password: na
+            truststore:
+              location: na
+              password: na
+        write:
+          - hostname: 127.0.0.1:27017
+            username: root
+            password: root
+            keystore:
+              location: na
+              password: na
+            truststore:
+              location: na
+              password: na
+      emea:
+        read:
+          - hostname: 127.0.0.1:27017
+            username: root
+            password: root
+            keystore:
+              location: na
+              password: na
+            truststore:
+              location: na
+              password: na
+        write:
+          - hostname: 127.0.0.1:27017
+            username: root
+            password: root
+            keystore:
+              location: na
+              password: na
+            truststore:
+              location: na
+              password: na
+      nam:
+        read:
+          - hostname: 127.0.0.1:27017
+            username: root
+            password: root
+            keystore:
+              location: na
+              password: na
+            truststore:
+              location: na
+              password: na
+        write:
+          - hostname: 127.0.0.1:27017
+            username: root
+            password: root
+            keystore:
+              location: na
+              password: na
+            truststore:
+              location: na
+              password: na

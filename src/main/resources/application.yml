@@ -1,0 +1,43 @@
+#logging:
+#  level:
+#    org:
+#      springframework: trace
+#      mongodb:
+#        utility: trace
+#  file:
+#    name: mongodb-utility.log
+#    path: /Volumes/Macintosh-User/workspace/OUTPUT_FILES/
+#logging:
+#  log4j2:
+#    config:
+#      override: classpath:log4j2.xml
+spring:
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration
+    # to be able to create multiple <p>MongoTemplate</p> objects, it is necessary to disable the Spring Boot
+    # autoconfig for MongoDB
+  profiles: #referring multiple *.yaml files like below.
+    include:
+      - dbcollections #to include the mongo database collections to be used across all the env profiles
+#      - mongodb-config
+#      - fmi-config
+
+  main:
+    web-application-type: none
+    # The application should not run as a web application and should not start an embedded web server.
+
+home:
+  mongodb: #mongodb binaries to execute dump, restore & other functionalities.
+    binaries:
+      linux:
+        rhel: bin/linux/rhel
+        debian: bin/linux/debian
+        centos: bin/linux/centos
+      windows: bin/winX
+      mac: bin/macOSX
+    backup:
+      path:
+        linux: /tmp/mongoBackup
+        windows: C:\TMP\mongoBackup
+        mac: /Volumes/Macintosh-User/workspace/OUTPUT_FILES/mongoBackup
+
