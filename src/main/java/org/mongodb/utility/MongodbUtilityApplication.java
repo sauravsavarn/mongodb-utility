@@ -6,9 +6,12 @@ import org.mongodb.utility.config.AppConfig;
 import org.mongodb.utility.config.DBConfig;
 import org.mongodb.utility.config.FMIConfig;
 import org.mongodb.utility.constants.Constants;
+import org.mongodb.utility.domain.BackupConfiguration;
 import org.mongodb.utility.domain.dbcollection.DBCollection;
+import org.mongodb.utility.domain.hostconf.IMongoServerHostConfiguration;
 import org.mongodb.utility.domain.hostconf.MongoServerDefaultHostConfiguration;
 import org.mongodb.utility.domain.model.DatabaseModel;
+import org.mongodb.utility.service.impl.MongoDump;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
@@ -33,11 +36,14 @@ public class MongodbUtilityApplication implements CommandLineRunner {
     @Autowired
     private MongoServerDefaultHostConfiguration mongoHostConfig;
 
-    @Value("${home.mongodb.mac}")
+    @Value("${home.mongodb.binaries.mac}")
     private String locBinaryMongoDBMacOSX;
     @Autowired
     private DBCollection dbCollection;
-
+    @Autowired
+    private BackupConfiguration backupConfiguration;
+    @Autowired
+    private MongoDump mongoDump;
     private ObjectMapper objectMapper;
 
     /**
@@ -81,8 +87,9 @@ public class MongodbUtilityApplication implements CommandLineRunner {
         appConfig.addToCache(Constants.LOCATION, args[3]);
         appConfig.addToCache(Constants.READ_DB_CONFIG, (DatabaseModel) ( (dbConfig.getEnv().get(args[0])).get(args[1]).get("read")).values().toArray()[0]);
         appConfig.addToCache(Constants.WRITE_DB_CONFIG, (DatabaseModel) ( (dbConfig.getEnv().get(args[0])).get(args[1]).get("write")).values().toArray()[0]);
-        appConfig.addToCache(Constants.READ_DB_NAME, fmiConfig.getRegion().get(args[1]).get(args[2]).get("write"));
+        appConfig.addToCache(Constants.READ_DB_NAME, fmiConfig.getRegion().get(args[1]).get(args[2]).get("read"));
         appConfig.addToCache(Constants.WRITE_DB_NAME, fmiConfig.getRegion().get(args[1]).get(args[2]).get("write"));
+
 
         /* ** printing the app-config cache ** */
         System.out.println("<<<<<< FINALLY PRINTING ITEMS IN APP-CACHE >>>>>>");
@@ -95,5 +102,13 @@ public class MongodbUtilityApplication implements CommandLineRunner {
         System.out.println("MongoDBServerHostConfiguration : " + mongoHostConfig.getMongoDumpBinAbsolutePath());
 
         System.out.println("DB-Collections : " + dbCollection.getDbcollections());
+
+        /* ** backup configuration setInstance ** */
+        backupConfiguration.setInstance(appConfig, mongoHostConfig, dbCollection);
+
+        /* ** Initiating backup(s). ** */
+        mongoDump.execute(Constants.OPS_BACKUP, backupConfiguration, null);
+        /* ** Initiating restore(s). ** */
+        // mongoDump.execute(Constants.OPS_BACKUP, null, null /*to initiate restore add restoreConfiguration object here*/);
     }
 }

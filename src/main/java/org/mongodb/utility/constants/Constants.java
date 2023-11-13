@@ -12,4 +12,6 @@ public class Constants {
     public static final String OS_WINX = "win.*";
     public static final String OS_MACOSX = "mac.*";
     public static final String OS_LINUX_RHEL = "linuxREDHAT";
+    public static final String OPS_BACKUP = "backup"; //operations backup
+    public static final String OPS_RESTORE = "restore"; //operations restore
 }

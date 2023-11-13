@@ -26,6 +26,7 @@ public class MongoServerDefaultHostConfiguration implements IMongoServerHostConf
     private String binMongoHomeLinuxDEBIAN;
 
     String mongodumpBin = "mongodump";
+    String mongoexportBin = "mongoexport";
     String mongorestoreBin = "mongorestore";
     private boolean forceMongoHome = false;
     private String detectedOS = null;
@@ -50,12 +51,16 @@ public class MongoServerDefaultHostConfiguration implements IMongoServerHostConf
 
 
         if ( (Pattern.compile(Constants.OS_MACOSX.toLowerCase())).matcher(detectedOS).matches() )  {
-            return String.format("%s%s%s%s%s", binMongoHomeMacOSX, File.separator, "bin", File.separator, command);
+            //return String.format("%s%s%s%s%s", binMongoHomeMacOSX, File.separator, "bin", File.separator, command);
+            //return String.format("%s%s%s%s%s", binMongoHomeMacOSX, File.separator, "", File.separator, command);
+            return String.format("%s%s%s%s%s", binMongoHomeMacOSX, File.separator, "", File.separator, "mongoexport");
         } else if ( (Pattern.compile(Constants.OS_WINX.toLowerCase())).matcher(detectedOS).matches() ) {
-            return String.format("%s%s%s%s%s.exe", binMongoHomeWinX, File.separator, "bin", File.separator, command);
+            //return String.format("%s%s%s%s%s.exe", binMongoHomeWinX, File.separator, "bin", File.separator, command);
+            return String.format("%s%s%s%s%s.exe", binMongoHomeWinX, File.separator, "", File.separator, command);
         } else {
             String binMongoDB = (detectedOS.contains("red") ? binMongoHomeLinuxRHEL : (detectedOS.contains("centos") ? binMongoHomeLinuxCENTOS : (detectedOS.contains("debian") ? binMongoHomeLinuxDEBIAN : "NA")));
-            return String.format("%s%s%s%s%s.sh", binMongoDB, File.separator, "bin", File.separator, command);
+            //return String.format("%s%s%s%s%s.sh", binMongoDB, File.separator, "bin", File.separator, command);
+            return String.format("%s%s%s%s%s.sh", binMongoDB, File.separator, "", File.separator, command);
         }
     }
 

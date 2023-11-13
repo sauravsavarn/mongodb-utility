@@ -30,11 +30,12 @@ home:
   mongodb: #mongodb binaries to execute dump, restore & other functionalities.
     binaries:
       linux:
-        rhel: bin/linux/rhel
-        debian: bin/linux/debian
-        centos: bin/linux/centos
-      windows: bin/winX
-      mac: bin/macOSX
+        rhel: classpath:bin/linux/rhel
+        debian: classpath:bin/linux/debian
+        centos: classpath:bin/linux/centos
+      windows: classpath:bin/winX
+#      mac: classpath:bin/macOSX
+      mac: /Volumes/Macintosh-User/workspace/workspace_spring/mongodb-utility/bin/macOSX
     backup:
       path:
         linux: /tmp/mongoBackup

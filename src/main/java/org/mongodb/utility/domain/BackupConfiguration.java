@@ -1,53 +1,77 @@
 package org.mongodb.utility.domain;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import org.mongodb.utility.config.AppConfig;
 import org.mongodb.utility.constants.Constants;
-import org.mongodb.utility.domain.hostconf.MongoServerDefaultHostConfiguration;
+import org.mongodb.utility.domain.dbcollection.DBCollection;
+import org.mongodb.utility.domain.hostconf.IMongoServerHostConfiguration;
+import org.mongodb.utility.domain.model.DatabaseModel;
 import org.mongodb.utility.util.HelperUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.DependsOn;
 import org.springframework.core.env.Environment;
+import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.io.File;
+import java.util.List;
 import java.util.regex.Pattern;
 
 @Data
-@Configuration
+@AllArgsConstructor
+@Component
 public class BackupConfiguration {
 
     private String detectedOS = null;
     String backupName = null;
     String dbName = null;
     String collectionName = null;
+    List<String> collectionNames = null;
     String backupDirectory = null;
     String backupRemoteDirectory = "/";
+    DatabaseModel readDBModel;
+    DatabaseModel writeDBModel;
+    private AppConfig appConfig;
+    private DBCollection dbCollection;
+    private IMongoServerHostConfiguration mongoHostConfig;
     @Autowired
     private Environment environment;
 
     private BackupConfiguration() {
+        /* ** call: to get the absolute backup directory location w.r.t the OS where the program is running. ** */
+//        this.getAbsoluteBackupName();
     }
 
-    ;
-
-    public static BackupConfiguration getInstance(String dbName, String backupName) {
-        BackupConfiguration conf = new BackupConfiguration();
-        conf.dbName = dbName;
-        conf.backupName = backupName;
-        return conf;
+    /**
+     *
+     * @param appConfig
+     * @param dbName
+     * @param collectionName
+     * @param collectionNames
+     * @param backupName
+     * @param backupDirectory
+     */
+    public void setInstance(AppConfig appConfig, String dbName, String collectionName, List<String> collectionNames, String backupName, String backupDirectory) {
+        this.readDBModel = readDBModel;
+        this.writeDBModel = writeDBModel;
+        this.backupName = backupName;
+        this.dbName = dbName;
+        this.collectionName = collectionName;
+        this.collectionNames = collectionNames;
+        this.backupDirectory = backupDirectory;
     }
 
-    public static BackupConfiguration getInstance(String dbName) {
-        return getInstance(dbName, dbName);
-    }
-
-    public static BackupConfiguration getInstance(String dbName, String collectionName, String backupDirectory) {
-        BackupConfiguration conf = BackupConfiguration.getInstance(dbName);
-        conf.collectionName = collectionName;
-        if (backupDirectory != null) {
-            conf.backupDirectory = backupDirectory;
-        }
-        return conf;
+    /**
+     *
+     * @param appConfig
+     * @param mongoHostConfig
+     * @param dbCollection
+     */
+    public void setInstance(AppConfig appConfig, IMongoServerHostConfiguration mongoHostConfig, DBCollection dbCollection) {
+        this.appConfig = appConfig;
+        this.mongoHostConfig = mongoHostConfig;
+        this.dbCollection = dbCollection;
+//        this.backupDirectory = backupDirectory;
     }
 
     /**
@@ -79,6 +103,12 @@ public class BackupConfiguration {
      */
     public String toString() {
         return String.format("BackupConfiguration[db:%s %s dir:%s file:%s.zip]",
-                dbName, collectionName != null ? "coll:" + collectionName : "", backupDirectory, backupName);
+                dbName, collectionName != null ? "coll:" + collectionName : collectionNames.toString(), backupDirectory, backupName);
+    }
+
+    @PostConstruct
+    private void init() {
+        /* ** call: to get the absolute backup directory location w.r.t the OS where the program is running. ** */
+        this.getAbsoluteBackupName();
     }
 }
