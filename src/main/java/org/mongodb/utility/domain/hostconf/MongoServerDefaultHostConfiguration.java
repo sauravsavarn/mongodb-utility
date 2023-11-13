@@ -52,8 +52,8 @@ public class MongoServerDefaultHostConfiguration implements IMongoServerHostConf
 
         if ( (Pattern.compile(Constants.OS_MACOSX.toLowerCase())).matcher(detectedOS).matches() )  {
             //return String.format("%s%s%s%s%s", binMongoHomeMacOSX, File.separator, "bin", File.separator, command);
-            //return String.format("%s%s%s%s%s", binMongoHomeMacOSX, File.separator, "", File.separator, command);
-            return String.format("%s%s%s%s%s", binMongoHomeMacOSX, File.separator, "", File.separator, "mongoexport");
+            return String.format("%s%s%s%s%s", binMongoHomeMacOSX, File.separator, "", File.separator, command);
+//            return String.format("%s%s%s%s%s", binMongoHomeMacOSX, File.separator, "", File.separator, "mongoexport");
         } else if ( (Pattern.compile(Constants.OS_WINX.toLowerCase())).matcher(detectedOS).matches() ) {
             //return String.format("%s%s%s%s%s.exe", binMongoHomeWinX, File.separator, "bin", File.separator, command);
             return String.format("%s%s%s%s%s.exe", binMongoHomeWinX, File.separator, "", File.separator, command);
@@ -69,7 +69,8 @@ public class MongoServerDefaultHostConfiguration implements IMongoServerHostConf
      * @return
      */
     public String getMongoDumpBinAbsolutePath() {
-        return getMongoCommandAbsolutePath(mongodumpBin);
+        //return getMongoCommandAbsolutePath(mongodumpBin);
+        return getMongoCommandAbsolutePath(mongoexportBin);
     }
 
     /**

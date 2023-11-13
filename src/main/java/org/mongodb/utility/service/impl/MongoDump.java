@@ -37,7 +37,15 @@ public class MongoDump implements IMongoDump {
 
 
     /**
+     *
      * @param command - denotes the Intent which can be either backup or restore as of now.
+     * @param backupConfiguration
+     * @param restoreConfiguration
+     * @return
+     * @throws BackupException
+     * @throws RestoreException
+     * @throws IOException
+     * @throws InterruptedException
      */
     public String execute(String command, BackupConfiguration backupConfiguration, RestoreConfiguration restoreConfiguration) throws BackupException, RestoreException, IOException, InterruptedException {
         if (command == Constants.OPS_BACKUP) return backup(backupConfiguration);
@@ -46,9 +54,12 @@ public class MongoDump implements IMongoDump {
     }
 
     /**
+     *
      * @param backupConf
      * @return
      * @throws BackupException
+     * @throws IOException
+     * @throws InterruptedException
      */
     private String backup(BackupConfiguration backupConf) throws BackupException, IOException, InterruptedException {
         if (backupConf.getAppConfig().getAppCache().isEmpty())
@@ -59,13 +70,13 @@ public class MongoDump implements IMongoDump {
         /* ** Iff both the read-db-configuration and read-db-name exists as per the configuration in yaml - proceed to take BackUP of read-db ** */
         if (backupConf.getAppConfig().getAppCache().get(Constants.READ_DB_CONFIG) != null && backupConf.getAppConfig().getAppCache().get(Constants.READ_DB_NAME) != null) {
             //databaseModels.add( (DatabaseModel) backupConf.getAppConfig().getAppCache().get(Constants.READ_DB_CONFIG));
-            databases.add(new Database(backupConf.getMongoHostConfig().getMongoDumpBinAbsolutePath(), backupConf.getBackupDirectory(), (DatabaseModel) backupConf.getAppConfig().getAppCache().get(Constants.READ_DB_CONFIG), (String) backupConf.getAppConfig().getAppCache().get(Constants.READ_DB_NAME), backupConf.getDbCollection()));
+            databases.add(new Database(backupConf.getMongoHostConfig().getMongoDumpBinAbsolutePath(), backupConf.getBackupDirectory(), backupConf.getWorkingDirectory(), (DatabaseModel) backupConf.getAppConfig().getAppCache().get(Constants.READ_DB_CONFIG), (String) backupConf.getAppConfig().getAppCache().get(Constants.READ_DB_NAME), backupConf.getDbCollection()));
         }
 
         /* ** Iff both the read-db-configuration and read-db-name exists as per the configuration in yaml - proceed to take BackUP of read-db ** */
         if (backupConf.getAppConfig().getAppCache().get(Constants.WRITE_DB_CONFIG) != null && backupConf.getAppConfig().getAppCache().get(Constants.WRITE_DB_NAME) != null) {
             //databaseModels.add( (DatabaseModel) backupConf.getAppConfig().getAppCache().get(Constants.WRITE_DB_CONFIG));
-            databases.add(new Database(backupConf.getMongoHostConfig().getMongoDumpBinAbsolutePath(), backupConf.getBackupDirectory(), (DatabaseModel) backupConf.getAppConfig().getAppCache().get(Constants.WRITE_DB_CONFIG), (String) backupConf.getAppConfig().getAppCache().get(Constants.WRITE_DB_NAME), backupConf.getDbCollection()));
+            databases.add(new Database(backupConf.getMongoHostConfig().getMongoDumpBinAbsolutePath(), backupConf.getBackupDirectory(), backupConf.getWorkingDirectory(), (DatabaseModel) backupConf.getAppConfig().getAppCache().get(Constants.WRITE_DB_CONFIG), (String) backupConf.getAppConfig().getAppCache().get(Constants.WRITE_DB_NAME), backupConf.getDbCollection()));
         }
 
         /* ***************************************************************************************************** */
@@ -107,7 +118,8 @@ public class MongoDump implements IMongoDump {
                     );
 
                     /* ** ** */
-                    ProcessBuilder pb = new ProcessBuilder(command).directory(new File("/Volumes/Macintosh-User/workspace/OUTPUT_FILES/tmp/")); //YOU CAN CHANGE THE WORKING DIRECTORY AS NECESSARY
+                    //ProcessBuilder pb = new ProcessBuilder(command).directory(new File("/Volumes/Macintosh-User/workspace/OUTPUT_FILES/tmp/")); //YOU CAN CHANGE THE WORKING DIRECTORY AS NECESSARY
+                    ProcessBuilder pb = new ProcessBuilder(command).directory(new File(database.getLocWorkingDirectory())); //YOU CAN CHANGE THE WORKING DIRECTORY AS NECESSARY
                     //ProcessBuilder pb = new ProcessBuilder(command);
                     System.out.println(pb.command());
                     //Process process = pb.start();
@@ -135,12 +147,69 @@ public class MongoDump implements IMongoDump {
             });
         } else { /* ** sequential execution ** */
             System.out.println(databases.get(0) + " " + Thread.currentThread().getName());
+
+            // ################################################ //
+            if(!databases.isEmpty()) {
+                databases.forEach(database -> {
+                    System.out.println(database + " " + Thread.currentThread().getName());
+
+                    /* ** ** */
+                    database.getDbCollection().getDbcollections().parallelStream().forEach(dbCollection -> {
+                        // ########### per collection as specified ######## //
+                        List<String> command = Arrays.asList(
+                                database.getAbspathMongoBinary(),
+                                "--db", database.getDbName(), //NOT NECESSARY IF YOU DUMP ALL DBs
+                                "--collection", dbCollection, // NOT NECESSARY IF YOU DUMP ALL Collections in the db
+//                        "--port", "28017", //NOT NECESSARY IF DEFAULT 27017
+                                "--username", database.getDatabaseModel().getUsername(), //NOT NECESSARY IF NO AUTH
+                                "--authenticationDatabase", "admin", //NOT NECESSARY IF NO AUTH
+                                "--password", database.getDatabaseModel().getPassword(), //NOT NECESSARY IF NO AUTH
+//                        "--query", "{\"customer\":\"John Doe\")}", // USED FOR ONLY DUMPING RESULTS OF A QUERY
+//                            "--out", database.getLocBackupDirectory()/+`dbCollection.json` // DEFAULTS TO working directory
+                                "--out", database.getLocBackupDirectory()+"/"+dbCollection+".json", // DEFAULTS TO working directory
+                                "--pretty"
+                        );
+
+                        /* ** ** */
+                        ProcessBuilder pb = new ProcessBuilder(command).directory(new File(database.getLocWorkingDirectory())); //YOU CAN CHANGE THE WORKING DIRECTORY AS NECESSARY
+                        System.out.println(pb.command());
+                        //Process process = pb.start();
+                        Process process = null;
+
+                        try {
+                            process = pb.start();
+                            List<String> results = readOutputHelper(process.getInputStream());
+                            List<String> err = readOutputHelper(process.getErrorStream());
+
+                            System.out.println(results);
+                            System.out.println(err);
+
+                            //WAITING FOR A RETURN FROM THE PROCESS WE STARTED
+                            int exitCode = process.waitFor();
+
+                            System.out.println("exitCode:" + exitCode);
+                        } catch (Exception exception) {
+                            System.out.println("[MongoDump - backup ] : Exception - " + exception.getMessage());
+                            exception.printStackTrace();
+                        }
+                        // ################################################ //
+                    });
+
+                });
+            }
+            // ################################################ //
         }
 
         /* ** ** */
         return null;
     }
 
+    /**
+     *
+     * @param inputStream
+     * @return
+     * @throws IOException
+     */
     private List<String> readOutputHelper(InputStream inputStream) throws IOException {
         try (BufferedReader output = new BufferedReader(new InputStreamReader(inputStream))) {
             return output.lines()
@@ -168,14 +237,16 @@ class Database {
     private DBCollection dbCollection;
     private String abspathMongoBinary; //absolute path of responsible mongo binary required for the job/task.
     private String locBackupDirectory; //absolute path/location of backup directory.
+    private String locWorkingDirectory; //absolute path/location of working directory.
 
     /**
      * @param databaseModel
      * @param dbName
      */
-    public Database(String abspathMongoBinary, String abspathBackupDir, DatabaseModel databaseModel, String dbName, DBCollection dbCollection) {
+    public Database(String abspathMongoBinary, String abspathBackupDir, String abspathWorkingDir, DatabaseModel databaseModel, String dbName, DBCollection dbCollection) {
         this.abspathMongoBinary = abspathMongoBinary;
         this.locBackupDirectory = abspathBackupDir;
+        this.locWorkingDirectory = abspathWorkingDir;
         this.databaseModel = databaseModel;
         this.dbName = dbName;
         this.dbCollection = dbCollection;

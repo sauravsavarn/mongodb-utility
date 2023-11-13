@@ -29,6 +29,7 @@ public class BackupConfiguration {
     List<String> collectionNames = null;
     String backupDirectory = null;
     String backupRemoteDirectory = "/";
+    String workingDirectory = null;
     DatabaseModel readDBModel;
     DatabaseModel writeDBModel;
     private AppConfig appConfig;
@@ -99,6 +100,14 @@ public class BackupConfiguration {
     }
 
     /**
+     * set application working directory.
+     */
+    public void getAbsoluteWorkingDirectory() {
+        //if backup dir is @NULL, then first check for the backup directory based on the os* as per definition in application.yml
+        this.workingDirectory = environment.getProperty("home.app.working.directory");
+    }
+
+    /**
      * @return
      */
     public String toString() {
@@ -110,5 +119,7 @@ public class BackupConfiguration {
     private void init() {
         /* ** call: to get the absolute backup directory location w.r.t the OS where the program is running. ** */
         this.getAbsoluteBackupName();
+        /* ** call: to get the absolute working directory location w.r.t the OS whre the program is running. ** */
+        this.getAbsoluteWorkingDirectory();
     }
 }

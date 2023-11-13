@@ -30,15 +30,18 @@ home:
   mongodb: #mongodb binaries to execute dump, restore & other functionalities.
     binaries:
       linux:
-        rhel: classpath:bin/linux/rhel
-        debian: classpath:bin/linux/debian
-        centos: classpath:bin/linux/centos
-      windows: classpath:bin/winX
-#      mac: classpath:bin/macOSX
-      mac: /Volumes/Macintosh-User/workspace/workspace_spring/mongodb-utility/bin/macOSX
+        rhel: ${user.dir}/bin/linux/rhel
+        debian: ${user.dir}/bin/linux/debian
+        centos: ${user.dir}/bin/linux/centos
+      windows: ${user.dir}/bin/winX
+      mac: ${user.dir}/bin/macOSX
+#      mac: /Volumes/Macintosh-User/workspace/workspace_spring/mongodb-utility/bin/macOSX
     backup:
       path:
         linux: /tmp/mongoBackup
         windows: C:\TMP\mongoBackup
         mac: /Volumes/Macintosh-User/workspace/OUTPUT_FILES/mongoBackup
+  app:
+    working:
+      directory: /Volumes/Macintosh-User/workspace/OUTPUT_FILES/tmp/ #app working directory. refer MongoDump.java for details.
 
